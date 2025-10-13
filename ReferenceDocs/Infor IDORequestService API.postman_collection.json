@@ -1,0 +1,1225 @@
+{
+	"info": {
+		"_postman_id": "48922b49-c0ca-4d95-b264-da4a003b2221",
+		"name": "Infor IDORequestService API",
+		"description": "Access to Mongoose through a RESTful service interface. This collection includes all endpoints for managing IDO collections, authentication, file operations, and document objects.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11801574"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Security Token (Path Params)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/token/{{config}}/{{username}}/{{password}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"token",
+								"{{config}}",
+								"{{username}}",
+								"{{password}}"
+							]
+						},
+						"description": "Returns a Mongoose token for a specific user which can be used for making authenticated requests when calling the Mongoose REST API directly"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/token/{{config}}/{{username}}/{{password}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"token",
+										"{{config}}",
+										"{{username}}",
+										"{{password}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"Token\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Security Token (Header Auth)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "{{username}}",
+								"description": "Username"
+							},
+							{
+								"key": "password",
+								"value": "{{password}}",
+								"description": "Password"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/token/{{config}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"token",
+								"{{config}}"
+							]
+						},
+						"description": "Returns a Mongoose token for a specific user using header authentication"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "username",
+										"value": "{{username}}"
+									},
+									{
+										"key": "password",
+										"value": "{{password}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/token/{{config}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"token",
+										"{{config}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"Token\": \"\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Security token endpoints for authentication"
+		},
+		{
+			"name": "IDO Operations",
+			"item": [
+				{
+					"name": "Load Collection",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b/XdI6IQzCviZOGJ0E+002DoKUFOPmVDkwpQDbQjm3w/qkdxDUzmqvSYEZDCmJGWpA23OTlhFpxRHFz3WOsvay8V58XdIp/UIsr5TpCdMwvoO+jzjloJpqRoP6SsKySXxz13TaNLZvEtEl9kaqQW014N3LgaKm/NNLxTnCeQGyx4sSvNmMtP+n6uKnOPB54f+vjOEB16w17RJlQU3ni5/jtCnlwCXzDwBOx0h4DRg4IiEVMEJ1WrrmgV5LX1ZMTs+dWTvFqhTuWKJjp6eqm9rKZ/P4aZ998C+WOEEOcK9y91aQkv46MvT0Yzy+yQYPBzKf+KdXNHQUjuWH1SKF9VyGEzNWMzl+x8gxiXuC19hH3STltuSU32/RDas2NyocgzpQy9vWBJUG5wU5qpEngaN5kKP4Gecvj7VAxsfVi/L9vxHZ1tvAr4O/muFqzXWnyysBhbYgxBBYAzbT6gIU6hcaMaFZfxGJNdxjjIMnrJeHHPZy23PPR1frEhlmMhDSiJ",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/load/SLCustomerAlls?properties=*&filter=&orderBy=&recordCap=-1&distinct=false&clm=&clmParam=&loadType=FIRST&bookmark=&pqc=&readOnly=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"load",
+								"SLCustomerAlls"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "*",
+									"description": "Comma-delimited property list. Use '*' for all properties"
+								},
+								{
+									"key": "filter",
+									"value": "",
+									"description": "SQL filter string"
+								},
+								{
+									"key": "orderBy",
+									"value": "",
+									"description": "SQL ORDER BY value"
+								},
+								{
+									"key": "recordCap",
+									"value": "-1",
+									"description": "Row cap: -1 = default, 0 = unlimited"
+								},
+								{
+									"key": "distinct",
+									"value": "false",
+									"description": "SQL DISTINCT keyword"
+								},
+								{
+									"key": "clm",
+									"value": "",
+									"description": "Custom Load Method name"
+								},
+								{
+									"key": "clmParam",
+									"value": "",
+									"description": "Comma-separated Custom Load Method parameters"
+								},
+								{
+									"key": "loadType",
+									"value": "FIRST",
+									"description": "Load type: FIRST | NEXT | PREVIOUS | LAST"
+								},
+								{
+									"key": "bookmark",
+									"value": "",
+									"description": "Bookmark ID"
+								},
+								{
+									"key": "pqc",
+									"value": "",
+									"description": "Post Query Command name"
+								},
+								{
+									"key": "readOnly",
+									"value": "false",
+									"description": "Read Only flag"
+								}
+							]
+						},
+						"description": "Returns a set of records from a collection"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/load/{{ido}}?properties=*&loadType=FIRST",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"load",
+										"{{ido}}"
+									],
+									"query": [
+										{
+											"key": "properties",
+											"value": "*"
+										},
+										{
+											"key": "loadType",
+											"value": "FIRST"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"Items\": [\n    \"\"\n  ],\n  \"Bookmark\": \"\",\n  \"MoreRowsExist\": false\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/load/{{ido}}?properties=*&loadType=FIRST",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"load",
+										"{{ido}}"
+									],
+									"query": [
+										{
+											"key": "properties",
+											"value": "*"
+										},
+										{
+											"key": "loadType",
+											"value": "FIRST"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Something went wrong validating OAuth 1.0a credentials.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Collection",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"IDOName\": \"{{ido}}\",\n  \"RefreshAfterSave\": false,\n  \"CustomInsert\": \"\",\n  \"CustomUpdate\": \"\",\n  \"CustomDelete\": \"\",\n  \"Changes\": [\n    {\n      \"Action\": 1,\n      \"ItemId\": \"\",\n      \"ItemNo\": null,\n      \"UpdateLocking\": 0,\n      \"Properties\": [\n        {\n          \"IsNull\": false,\n          \"Modified\": false,\n          \"Name\": \"\",\n          \"Value\": \"\",\n          \"OriginalValue\": \"\",\n          \"IsNestedCollection\": false,\n          \"NestedCollection\": \"\"\n        }\n      ]\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/update/{{ido}}?refresh=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"update",
+								"{{ido}}"
+							],
+							"query": [
+								{
+									"key": "refresh",
+									"value": "false",
+									"description": "Refresh after update flag"
+								}
+							]
+						},
+						"description": "Insert, update, or delete one or more records from a collection"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"IDOName\": \"{{ido}}\",\n  \"RefreshAfterSave\": false,\n  \"CustomInsert\": \"\",\n  \"CustomUpdate\": \"\",\n  \"CustomDelete\": \"\",\n  \"Changes\": [\n    {\n      \"Action\": 1,\n      \"ItemId\": \"\",\n      \"ItemNo\": null,\n      \"UpdateLocking\": 0,\n      \"Properties\": [\n        {\n          \"IsNull\": false,\n          \"Modified\": false,\n          \"Name\": \"\",\n          \"Value\": \"\",\n          \"OriginalValue\": \"\",\n          \"IsNestedCollection\": false,\n          \"NestedCollection\": \"\"\n        }\n      ]\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/update/{{ido}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"update",
+										"{{ido}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"RefreshItems\": [\n    {\n      \"Action\": 1,\n      \"ItemId\": \"\",\n      \"ItemNo\": null,\n      \"UpdateLocking\": 0,\n      \"Properties\": [\n        {\n          \"IsNull\": false,\n          \"Modified\": false,\n          \"Name\": \"\",\n          \"Value\": \"\",\n          \"OriginalValue\": \"\",\n          \"IsNestedCollection\": false,\n          \"NestedCollection\": {\n            \"IDOName\": \"\",\n            \"RefreshAfterSave\": false,\n            \"CustomInsert\": \"\",\n            \"CustomUpdate\": \"\",\n            \"CustomDelete\": \"\",\n            \"Changes\": [\n              \"\"\n            ],\n            \"Links\": [\n              {\n                \"ParentProperty\": \"\",\n                \"ChildProperty\": \"\"\n              }\n            ],\n            \"CollectionID\": \"\"\n          }\n        }\n      ]\n    }\n  ],\n  \"Bookmark\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get IDO Property Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/info/{{ido}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"info",
+								"{{ido}}"
+							]
+						},
+						"description": "Returns IDO property metadata including properties, keys, and subcollections"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/info/{{ido}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"info",
+										"{{ido}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"Properties\": [\n    {\n      \"Name\": \"\",\n      \"PropertyClass\": \"\",\n      \"DataType\": \"\",\n      \"ColumnDataType\": \"\",\n      \"ClrTypeName\": \"\",\n      \"Length\": null,\n      \"DecimalPos\": null,\n      \"LabelStringID\": \"\",\n      \"ReadOnly\": false,\n      \"Required\": false,\n      \"RORecord\": false,\n      \"BooleanTrueValue\": \"\",\n      \"BooleanFalseValue\": \"\",\n      \"CaseFormat\": \"\",\n      \"DateFormat\": \"\",\n      \"JustifyFormat\": \"\",\n      \"DefaultIMECharset\": \"\",\n      \"DefaultValue\": \"\",\n      \"DomainIDOName\": \"\",\n      \"DomainListProperties\": \"\",\n      \"DomainProperty\": \"\",\n      \"InputMask\": \"\",\n      \"IsItemWarnings\": false\n    }\n  ],\n  \"Keys\": [\n    \"\"\n  ],\n  \"SubCollections\": [\n    {\n      \"Name\": \"\",\n      \"IDOName\": \"\",\n      \"LinkBy\": [\n        {\n          \"Parent\": \"\",\n          \"Child\": \"\"\n        }\n      ]\n    }\n  ],\n  \"PrimaryBaseTable\": \"\",\n  \"PrimaryBaseTableAlias\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Invoke IDO Method",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  \"\"\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/invoke/{{ido}}?method={{methodName}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoke",
+								"{{ido}}"
+							],
+							"query": [
+								{
+									"key": "method",
+									"value": "{{methodName}}",
+									"description": "IDO method name"
+								}
+							]
+						},
+						"description": "Invokes an IDO method with parameters"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n  \"\"\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/invoke/{{ido}}?method={{methodName}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"invoke",
+										"{{ido}}"
+									],
+									"query": [
+										{
+											"key": "method",
+											"value": "{{methodName}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"ReturnValue\": \"\",\n  \"Parameters\": [\n    \"\"\n  ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Collection operations for reading, updating, and managing IDO data"
+		},
+		{
+			"name": "Configuration",
+			"item": [
+				{
+					"name": "Get Configurations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/configurations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"configurations"
+							]
+						},
+						"description": "Returns a list of available configurations for a server"
+					},
+					"response": []
+				}
+			],
+			"description": "Configuration management endpoints"
+		},
+		{
+			"name": "AES (Application Event System)",
+			"item": [
+				{
+					"name": "Fire AES Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"eventName\": \"\",\n  \"parameters\": {}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/aes/fire",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"aes",
+								"fire"
+							]
+						},
+						"description": "Fire an AES Event"
+					},
+					"response": []
+				}
+			],
+			"description": "Application Event System operations"
+		},
+		{
+			"name": "File Stream",
+			"item": [
+				{
+					"name": "Upload File Stream",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/filestream/upload",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"filestream",
+								"upload"
+							]
+						},
+						"description": "Upload file"
+					},
+					"response": []
+				},
+				{
+					"name": "Download File Stream",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/filestream/download/{{fileId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"filestream",
+								"download",
+								"{{fileId}}"
+							]
+						},
+						"description": "Download file"
+					},
+					"response": []
+				}
+			],
+			"description": "Binary file upload and download operations"
+		},
+		{
+			"name": "Document Objects",
+			"item": [
+				{
+					"name": "Get Document Objects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/docobj/list?ido={{ido}}&rowPointer={{rowPointer}}&docName=&docExt=&refSeq=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"docobj",
+								"list"
+							],
+							"query": [
+								{
+									"key": "ido",
+									"value": "{{ido}}",
+									"description": "IDO name (optional - for specific IDO documents only)"
+								},
+								{
+									"key": "rowPointer",
+									"value": "{{rowPointer}}",
+									"description": "Referenced IDO row pointer"
+								},
+								{
+									"key": "docName",
+									"value": "",
+									"description": "Document name"
+								},
+								{
+									"key": "docExt",
+									"value": "",
+									"description": "Document extension"
+								},
+								{
+									"key": "refSeq",
+									"value": "",
+									"description": "Document RefSequence"
+								}
+							]
+						},
+						"description": "Returns a list of document objects"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/docobj/list",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"docobj",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\",\n  \"Documents\": [\n    \"\"\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Upload Document Object",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/docobj/{{ido}}?itemId=&rowPointer={{rowPointer}}&name={{docName}}&desc={{docDescription}}&ext={{docExtension}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"docobj",
+								"{{ido}}"
+							],
+							"query": [
+								{
+									"key": "itemId",
+									"value": "",
+									"description": "_ItemId value (for updating existing document)"
+								},
+								{
+									"key": "rowPointer",
+									"value": "{{rowPointer}}",
+									"description": "Referenced IDO row pointer (for new document)"
+								},
+								{
+									"key": "name",
+									"value": "{{docName}}",
+									"description": "Document name"
+								},
+								{
+									"key": "desc",
+									"value": "{{docDescription}}",
+									"description": "Document description"
+								},
+								{
+									"key": "ext",
+									"value": "{{docExtension}}",
+									"description": "Document extension"
+								}
+							]
+						},
+						"description": "Upload document object"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"value": "",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/docobj/{{ido}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"docobj",
+										"{{ido}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"Success\": false,\n  \"Message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Download Document Object",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"description": "Token obtained through SecurityToken call or OAuth 2.0 Bearer token"
+							},
+							{
+								"key": "X-Infor-MongooseConfig",
+								"value": "{{mongooseConfig}}",
+								"description": "Mongoose configuration (required for ION API)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/docobj/{{ido}}?rowPointer={{rowPointer}}&name={{docName}}&refSeq={{refSeq}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"docobj",
+								"{{ido}}"
+							],
+							"query": [
+								{
+									"key": "rowPointer",
+									"value": "{{rowPointer}}",
+									"description": "IDO row pointer (required)"
+								},
+								{
+									"key": "name",
+									"value": "{{docName}}",
+									"description": "Document name"
+								},
+								{
+									"key": "refSeq",
+									"value": "{{refSeq}}",
+									"description": "Document RefSequence"
+								}
+							]
+						},
+						"description": "Download document object"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{authToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/docobj/{{ido}}?rowPointer={{rowPointer}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"docobj",
+										"{{ido}}"
+									],
+									"query": [
+										{
+											"key": "rowPointer",
+											"value": "{{rowPointer}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "X-Message",
+									"value": "Success message or error details"
+								}
+							],
+							"cookie": [],
+							"body": "Binary file content or empty response in case of error"
+						}
+					]
+				}
+			],
+			"description": "Document Object upload and download operations"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					"// Auto-authentication script",
+					"// This script will automatically get a token if one doesn't exist",
+					"",
+					"const authToken = pm.collectionVariables.get('token');",
+					"",
+					"if (!authToken || authToken === '') {",
+					"    console.log('No auth token found, attempting to get one...');",
+					"    ",
+					"    const baseUrl = pm.collectionVariables.get('baseUrl');",
+					"    const config = pm.collectionVariables.get('config');",
+					"    const username = pm.collectionVariables.get('username');",
+					"    const password = pm.collectionVariables.get('password');",
+					"    ",
+					"    if (config && username && password) {",
+					"        const tokenRequest = {",
+					"            url: `${baseUrl}/token/${config}/${username}/${password}`,",
+					"            method: 'GET'",
+					"        };",
+					"        ",
+					"        pm.sendRequest(tokenRequest, function(err, response) {",
+					"            if (err) {",
+					"                console.log('Error getting token:', err);",
+					"            } else {",
+					"                const responseJson = response.json();",
+					"                if (responseJson.Success && responseJson.Token) {",
+					"                    pm.collectionVariables.set('token', responseJson.Token);",
+					"                    console.log('Token obtained successfully');",
+					"                } else {",
+					"                    console.log('Failed to get token:', responseJson.Message);",
+					"                }",
+					"            }",
+					"        });",
+					"    } else {",
+					"        console.log('Please set config, username, and password variables');",
+					"    }",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					"// Auto-save token from SecurityToken responses",
+					"if (pm.info.requestName.includes('Security Token')) {",
+					"    const responseJson = pm.response.json();",
+					"    if (responseJson.Success && responseJson.Token) {",
+					"        pm.collectionVariables.set('token', responseJson.Token);",
+					"        console.log('Token saved to collection variables');",
+					"    }",
+					"}",
+					"",
+					"// Basic response validation",
+					"pm.test('Response has Success field', function () {",
+					"    const responseJson = pm.response.json();",
+					"    pm.expect(responseJson).to.have.property('Success');",
+					"});",
+					"",
+					"pm.test('Status code is 200', function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://example.io",
+			"description": {
+				"content": "Base URL for the IDO API",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "config",
+			"value": "your-config-name",
+			"description": {
+				"content": "Configuration name",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "username",
+			"value": "your-username",
+			"description": {
+				"content": "Username for authentication",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "password",
+			"value": "your-password",
+			"description": {
+				"content": "Password for authentication",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "authToken",
+			"value": "Bearer {{token}}",
+			"description": {
+				"content": "Authorization token (Bearer + token from SecurityToken endpoint)",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "token",
+			"value": "",
+			"description": {
+				"content": "Token value from SecurityToken response",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "mongooseConfig",
+			"value": "{{config}}",
+			"description": {
+				"content": "Mongoose configuration (same as config for most cases)",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "ido",
+			"value": "YourIDOName",
+			"description": {
+				"content": "IDO name (e.g., UserNames, Items, etc.)",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "methodName",
+			"value": "",
+			"description": {
+				"content": "IDO method name for InvokeMethod calls",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "rowPointer",
+			"value": "",
+			"description": {
+				"content": "IDO row pointer for document operations",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "docName",
+			"value": "",
+			"description": {
+				"content": "Document name",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "docDescription",
+			"value": "",
+			"description": {
+				"content": "Document description",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "docExtension",
+			"value": "",
+			"description": {
+				"content": "Document file extension",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "refSeq",
+			"value": "",
+			"description": {
+				"content": "Document reference sequence",
+				"type": "text/plain"
+			}
+		}
+	]
+}

@@ -1,0 +1,1355 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "description": "Access to Mongoose through a RESTful service interface.",
+      "version": "v2",
+      "title": "Mongoose REST Service",
+      "contact": {
+         "name": "Infor",
+         "url": "https://www.inforxtreme.com"
+      }
+   },
+   "basePath": "/IDORequestService/ido",
+   "tags": [
+      {
+         "name": "Configuration",
+         "description": "Configuration"
+      },
+      {
+         "name": "Token",
+         "description": "Security Token"
+      },
+      {
+         "name": "IDO",
+         "description": "Collection"
+      },
+      {
+         "name": "AES",
+         "description": "Application Event System"
+      },
+      {
+         "name": "File Stream",
+         "description": "Binary file upload and download"
+      },
+      {
+         "name": "Document Object",
+         "description": "Document Object upload and download"
+      }
+   ],
+   "schemes": [
+      "https"
+   ],
+   "paths": {
+      "/configurations": {
+         "get": {
+            "tags": [
+               "Configuration"
+            ],
+            "summary": "GetConfigurations",
+            "description": "Returns a list of available configurations for a server",
+            "operationId": "getConfigurations",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "configGroup",
+                  "in": "query",
+                  "required": false,
+                  "description": "Configuration group name. Use this option when you want to display only the members of the specified configuration group",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/GetConfigurationNamesResponse"
+                  }
+               }
+            }
+         }
+      },
+      "/token/{config}/{username}/{password}": {
+         "get": {
+            "tags": [
+               "Token"
+            ],
+            "summary": "SecurityToken",
+            "description": "Returns a Mongoose token for a specific user which can be used for making authenticated requests when calling the Mongoose REST API directly",
+            "operationId": "securityToken",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "config",
+                  "in": "path",
+                  "required": true,
+                  "description": "Configuration name",
+                  "type": "string"
+               },
+               {
+                  "name": "username",
+                  "in": "path",
+                  "required": true,
+                  "description": "Username",
+                  "type": "string"
+               },
+               {
+                  "name": "password",
+                  "in": "path",
+                  "required": true,
+                  "description": "Password",
+                  "type": "string",
+                  "format": "password"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/GetMongooseTokenResponse"
+                  }
+               }
+            }
+         }
+      },
+      "/token/{config}": {
+         "get": {
+            "tags": [
+               "Token"
+            ],
+            "summary": "SecurityToken",
+            "description": "Returns a Mongoose token for a specific user which can be used for making authenticated requests when calling the Mongoose REST API directly",
+            "operationId": "securityTokenCredentialsInHeaders",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "config",
+                  "in": "path",
+                  "required": true,
+                  "description": "Configuration name",
+                  "type": "string"
+               },
+               {
+                  "name": "username",
+                  "in": "header",
+                  "required": true,
+                  "description": "Username",
+                  "type": "string"
+               },
+               {
+                  "name": "password",
+                  "in": "header",
+                  "required": true,
+                  "description": "Password",
+                  "type": "string",
+                  "format": "password"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/GetMongooseTokenResponse"
+                  }
+               }
+            }
+         }
+      },
+      "/load/{ido}": {
+         "get": {
+            "tags": [
+               "IDO"
+            ],
+            "summary": "LoadCollection",
+            "description": "Returns a set of records from a collection",
+            "operationId": "loadCollection",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "properties",
+                  "in": "query",
+                  "required": true,
+                  "description": "A comma-delimited property list. Provide '*' to include all, except subcollection properties.",
+                  "type": "array",
+                  "items": {
+                     "type": "string",
+                     "collectionFormat": "csv"
+                  }
+               },
+               {
+                  "name": "filter",
+                  "in": "query",
+                  "required": false,
+                  "description": "SQL filter string",
+                  "type": "string"
+               },
+               {
+                  "name": "orderBy",
+                  "in": "query",
+                  "required": false,
+                  "description": "SQL ORDER BY value",
+                  "type": "string"
+               },
+               {
+                  "name": "recordCap",
+                  "in": "query",
+                  "required": false,
+                  "description": "Sets row cap: -1 = default in Mongoose; 0 = unlimited.",
+                  "type": "integer"
+               },
+               {
+                  "name": "distinct",
+                  "in": "query",
+                  "required": false,
+                  "description": "SQL DISTINCT keyword",
+                  "type": "boolean"
+               },
+               {
+                  "name": "clm",
+                  "in": "query",
+                  "required": false,
+                  "description": "Custom Load Method name",
+                  "type": "string"
+               },
+               {
+                  "name": "clmParam",
+                  "in": "query",
+                  "required": false,
+                  "description": "Comma-separated Custom Load Method parameters",
+                  "type": "array",
+                  "items": {
+                     "collectionFormat": "csv"
+                  }
+               },
+               {
+                  "name": "loadType",
+                  "in": "query",
+                  "required": false,
+                  "description": "Load type, one of FIRST | NEXT | PREVIOUS | LAST",
+                  "type": "string",
+                  "enum": [
+                     "FIRST",
+                     "NEXT",
+                     "PREVIOUS",
+                     "LAST"
+                  ]
+               },
+               {
+                  "name": "bookmark",
+                  "in": "query",
+                  "required": false,
+                  "description": "Designate bookmark ID",
+                  "type": "string"
+               },
+               {
+                  "name": "pqc",
+                  "in": "query",
+                  "required": false,
+                  "description": "Post Query Command name",
+                  "type": "string"
+               },
+               {
+                  "name": "readOnly",
+                  "in": "query",
+                  "required": false,
+                  "description": "Read Only flag; if set to 'true', no ItemId is returned with query",
+                  "type": "boolean"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/LoadCollectionResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/update/{ido}": {
+         "post": {
+            "tags": [
+               "IDO"
+            ],
+            "summary": "UpdateCollection",
+            "description": "Insert, update, or delete one or more records from a collection",
+            "operationId": "updateCollection",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "refresh",
+                  "in": "query",
+                  "required": false,
+                  "description": "Refresh after update flag",
+                  "type": "boolean"
+               },
+               {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "description": "IDOUpdateItem structure",
+                  "schema": {
+                     "$ref": "#/definitions/UpdateCollectionRequest"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/UpdateCollectionResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/info/{ido}": {
+         "get": {
+            "tags": [
+               "IDO"
+            ],
+            "summary": "IDOPropInfo",
+            "description": "Returns IDO property metadata",
+            "operationId": "propInfo",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Success (array will be empty in case of error).",
+                  "schema": {
+                     "$ref": "#/definitions/GetPropertyInfoResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/invoke/{ido}": {
+         "post": {
+            "tags": [
+               "IDO"
+            ],
+            "summary": "InvokeMethod",
+            "description": "Invokes an IDO method",
+            "operationId": "invokeMethod",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "method",
+                  "in": "query",
+                  "required": false,
+                  "description": "IDO method name",
+                  "type": "string"
+               },
+               {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "description": "IDO method parameters",
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/InvokeMethodResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/aes/{eventName}": {
+         "post": {
+            "tags": [
+               "AES"
+            ],
+            "summary": "FireAESEvent",
+            "description": "Fire an AES Event",
+            "operationId": "fireAESEvent",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "eventName",
+                  "in": "path",
+                  "required": true,
+                  "description": "Event name",
+                  "type": "string"
+               },
+               {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "description": "Event parameters",
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/AESEventParameter"
+                     }
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/FireAESEventResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/file/{ido}": {
+         "post": {
+            "tags": [
+               "File Stream"
+            ],
+            "summary": "UploadFileStream",
+            "description": "Upload file",
+            "operationId": "uploadFileStreamJSON",
+            "consumes": [
+               "application/octet-stream"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "property",
+                  "in": "query",
+                  "required": true,
+                  "description": "IDO property",
+                  "type": "string"
+               },
+               {
+                  "name": "itemId",
+                  "in": "query",
+                  "required": true,
+                  "description": "_ItemId value",
+                  "type": "string"
+               },
+               {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "description": "File to upload",
+                  "schema": {
+                     "type": "string",
+                     "format": "binary"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/MethodResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         },
+         "get": {
+            "tags": [
+               "File Stream"
+            ],
+            "summary": "DownloadFileStream",
+            "description": "Download file",
+            "operationId": "downloadFileStream",
+            "produces": [
+               "application/octet-stream"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "property",
+                  "in": "query",
+                  "required": true,
+                  "description": "IDO property name for storing binary data",
+                  "type": "string"
+               },
+               {
+                  "name": "rowPointer",
+                  "in": "query",
+                  "required": true,
+                  "description": "IDO row pointer",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Success (response will be empty in case of error). See headers X-Message for information.",
+                  "schema": {
+                     "type": "string",
+                     "format": "binary"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/docobj/list": {
+         "get": {
+            "tags": [
+               "Document Object"
+            ],
+            "summary": "GetDocumentObjects",
+            "description": "Returns a list of document objects",
+            "operationId": "getDocumentObjects",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "query",
+                  "required": false,
+                  "description": "IDO name. Use this option when you want to display documents from the specified IDO only",
+                  "type": "string"
+               },
+               {
+                  "name": "rowPointer",
+                  "in": "query",
+                  "required": false,
+                  "description": "Referenced IDO row pointer. Use this in tandem with the ido parameter",
+                  "type": "string"
+               },
+               {
+                  "name": "docName",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document name",
+                  "type": "string"
+               },
+               {
+                  "name": "docExt",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document extension",
+                  "type": "string"
+               },
+               {
+                  "name": "refSeq",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document RefSequence",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/LoadCollectionDocumentsResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      },
+      "/docobj/{ido}": {
+         "post": {
+            "tags": [
+               "Document Object"
+            ],
+            "summary": "UploadDocumentObject",
+            "description": "Upload document object",
+            "operationId": "uploadDocObject",
+            "consumes": [
+               "application/octet-stream"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "itemId",
+                  "in": "query",
+                  "required": false,
+                  "description": "_ItemId value in Document Object. Use this if you want to update an existing document object",
+                  "type": "string"
+               },
+               {
+                  "name": "rowPointer",
+                  "in": "query",
+                  "required": false,
+                  "description": "Referenced IDO row pointer. Use this if you want to upload a new document object and link it to the referenced IDO and row pointer",
+                  "type": "string"
+               },
+               {
+                  "name": "name",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document name",
+                  "type": "string"
+               },
+               {
+                  "name": "desc",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document description",
+                  "type": "string"
+               },
+               {
+                  "name": "ext",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document extension",
+                  "type": "string"
+               },
+               {
+                  "name": "body",
+                  "in": "body",
+                  "required": true,
+                  "description": "Document to upload",
+                  "schema": {
+                     "type": "string",
+                     "format": "binary"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "See Success and Message in the response for result status.",
+                  "schema": {
+                     "$ref": "#/definitions/MethodResponse"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         },
+         "get": {
+            "tags": [
+               "Document Object"
+            ],
+            "summary": "DownloadDocumentObject",
+            "description": "Download document object",
+            "operationId": "downloadDocObject",
+            "parameters": [
+               {
+                  "name": "Authorization",
+                  "in": "header",
+                  "required": false,
+                  "description": "Token obtained through a call to SecurityToken, or if using the service through ION API, a valid OAuth 2.0 Bearer token (filled in automatically by Swagger UI).",
+                  "type": "string"
+               },
+               {
+                  "name": "X-Infor-MongooseConfig",
+                  "in": "header",
+                  "required": false,
+                  "description": "Mongoose configuration to log into; required when using the service through ION API, not needed otherwise.",
+                  "type": "string"
+               },
+               {
+                  "name": "ido",
+                  "in": "path",
+                  "required": true,
+                  "description": "IDO name",
+                  "type": "string"
+               },
+               {
+                  "name": "rowPointer",
+                  "in": "query",
+                  "required": true,
+                  "description": "IDO row pointer",
+                  "type": "string"
+               },
+               {
+                  "name": "name",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document name",
+                  "type": "string"
+               },
+               {
+                  "name": "refSeq",
+                  "in": "query",
+                  "required": false,
+                  "description": "Document RefSequence",
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Success (response will be empty in case of error). See headers X-Message for information.",
+                  "schema": {
+                     "type": "string",
+                     "format": "binary"
+                  }
+               },
+               "401": {
+                  "$ref": "#/responses/Unauthorized"
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "MethodResponse": {
+         "type": "object",
+         "properties": {
+            "Success": {
+               "type": "boolean"
+            },
+            "Message": {
+               "type": "string"
+            }
+         }
+      },
+      "GetMongooseTokenResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Token": {
+                     "type": "string"
+                  }
+               }
+            }
+         ]
+      },
+      "GetConfigurationNamesResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Configurations": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      "LoadCollectionResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Items": {
+                     "type": "array",
+                     "items": {
+                        "type": "object"
+                     }
+                  },
+                  "Bookmark": {
+                     "type": "string"
+                  },
+                  "MoreRowsExist": {
+                     "type": "boolean"
+                  }
+               }
+            }
+         ]
+      },
+      "UpdateCollectionResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "RefreshItems": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/IDOUpdateItem"
+                     }
+                  },
+                  "Bookmark": {
+                     "type": "string"
+                  }
+               }
+            }
+         ]
+      },
+      "GetPropertyInfoResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Properties": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/PropertyInfo"
+                     }
+                  },
+                  "Keys": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  "SubCollections": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/RelationshipInfo"
+                     }
+                  },
+                  "PrimaryBaseTable": {
+                     "type": "string"
+                  },
+                  "PrimaryBaseTableAlias": {
+                     "type": "string"
+                  }
+               }
+            }
+         ]
+      },
+      "InvokeMethodResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "ReturnValue": {
+                     "type": "string"
+                  },
+                  "Parameters": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      "FireAESEventResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "EventName": {
+                     "type": "string"
+                  },
+                  "Parameters": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/AESEventParameter"
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      "LoadCollectionDocumentsResponse": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/MethodResponse"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Documents": {
+                     "type": "array",
+                     "items": {
+                        "type": "object"
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      "UpdateCollectionRequest": {
+         "type": "object",
+         "properties": {
+            "IDOName": {
+               "type": "string"
+            },
+            "RefreshAfterSave": {
+               "type": "boolean"
+            },
+            "CustomInsert": {
+               "type": "string"
+            },
+            "CustomUpdate": {
+               "type": "string"
+            },
+            "CustomDelete": {
+               "type": "string"
+            },
+            "Changes": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/definitions/IDOUpdateItem"
+               }
+            }
+         }
+      },
+      "IDOUpdateItem": {
+         "type": "object",
+         "properties": {
+            "Action": {
+               "type": "integer",
+               "description": "Use 1 for Insert, 2 for Update, 4 for Delete",
+               "enum": [
+                  1,
+                  2,
+                  4
+               ]
+            },
+            "ItemId": {
+               "type": "string"
+            },
+            "ItemNo": {
+               "type": "integer"
+            },
+            "UpdateLocking": {
+               "type": "integer",
+               "description":  "Use 0 for Row, 1 for Property",
+               "enum": [
+                  0,
+                  1 
+               ]
+            },
+            "Properties": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/definitions/UpdateProperty"
+               },
+               "xml": {
+                  "wrapped": true
+               }
+            }
+         }
+      },
+      "UpdateProperty": {
+         "type": "object",
+         "properties": {
+            "IsNull": {
+               "type": "boolean"
+            },
+            "Modified": {
+               "type": "boolean"
+            },
+            "Name": {
+               "type": "string"
+            },
+            "Value": {
+               "type": "string"
+            },
+            "OriginalValue": {
+               "type": "string"
+            },
+            "IsNestedCollection": {
+               "type": "boolean"
+            },
+            "NestedCollection": {
+               "$ref": "#/definitions/NestedUpdateCollection"
+            }
+         },
+         "xml": {
+            "name": "UpdateProperty"
+         }
+      },
+      "NestedUpdateCollection": {
+         "allOf": [
+            {
+               "$ref": "#/definitions/UpdateCollectionRequest"
+            },
+            {
+               "type": "object",
+               "properties": {
+                  "Links": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/NestedUpdateCollectionLink"
+                     }
+                  },
+                  "CollectionID": {
+                     "type": "string"
+                  }
+               }
+            }
+         ],
+         "xml": {
+            "name": "NestedCollection"
+         }
+      },
+      "NestedUpdateCollectionLink": {
+         "type": "object",
+         "properties": {
+            "ParentProperty": {
+               "type": "string"
+            },
+            "ChildProperty": {
+               "type": "string"
+            }
+         },
+         "xml": {
+            "name": "Links"
+         }
+      },
+      "PropertyInfo": {
+         "type": "object",
+         "properties": {
+            "Name": {
+               "type": "string"
+            },
+            "PropertyClass": {
+               "type": "string"
+            },
+            "DataType": {
+               "type": "string"
+            },
+            "ColumnDataType": {
+               "type": "string"
+            },
+            "ClrTypeName": {
+               "type": "string"
+            },
+            "Length": {
+               "type": "integer"
+            },
+            "DecimalPos": {
+               "type": "integer"
+            },
+            "LabelStringID": {
+               "type": "string"
+            },
+            "ReadOnly": {
+               "type": "boolean"
+            },
+            "Required": {
+               "type": "boolean"
+            },
+            "RORecord": {
+               "type": "boolean"
+            },
+            "BooleanTrueValue": {
+               "type": "string"
+            },
+            "BooleanFalseValue": {
+               "type": "string"
+            },
+            "CaseFormat": {
+               "type": "string"
+            },
+            "DateFormat": {
+               "type": "string"
+            },
+            "JustifyFormat": {
+               "type": "string"
+            },
+            "DefaultIMECharset": {
+               "type": "string"
+            },
+            "DefaultValue": {
+               "type": "string"
+            },
+            "DomainIDOName": {
+               "type": "string"
+            },
+            "DomainListProperties": {
+               "type": "string"
+            },
+            "DomainProperty": {
+               "type": "string"
+            },
+            "InputMask": {
+               "type": "string"
+            },
+            "IsItemWarnings": {
+               "type": "boolean"
+            }
+         }
+      },
+      "RelationshipInfo": {
+         "type": "object",
+         "properties": {
+            "Name": {
+               "type": "string"
+            },
+            "IDOName": {
+               "type": "string"
+            },
+            "LinkBy": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/definitions/PropertyPair"
+               }
+            }
+         }
+      },
+      "PropertyPair": {
+         "type": "object",
+         "properties": {
+            "Parent": {
+               "type": "string"
+            },
+            "Child": {
+               "type": "string"
+            }
+         }
+      },
+      "AESEventParameter": {
+         "type": "object",
+         "properties": {
+            "Name": {
+               "type": "string"
+            },
+            "Value": {
+               "type": "string"
+            },
+            "Return": {
+               "type": "boolean"
+            }
+         },
+         "xml": {
+            "name": "Parameter",
+            "namespace": "http://www.infor.com"
+         }
+      }
+   },
+   "responses": {
+      "Unauthorized": {
+         "description": "Something went wrong validating OAuth 1.0a credentials."
+      }
+   }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "syteline-mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for SyteLine/Mongoose ERP system",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "syteline-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "prepare": "npm run build",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "dotenv": "^16.4.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "SyteLine MCP Team",
+  "license": "MIT"
+}

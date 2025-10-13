@@ -1,0 +1,17 @@
+export const toolPaths = [
+  "infor_idorequestservice_api/syteline_usage_guide.ts",
+  "infor_idorequestservice_api/get_Get_Security_Token_Path_Params_token_config_username_password_.ts",
+  // \"infor_idorequestservice_api/syteline_get_ido_collection_names.ts\", // Removed - not in Swagger spec
+  "infor_idorequestservice_api/get_Get_Security_Token_Header_Auth_token_config_.ts",
+  "infor_idorequestservice_api/get_Load_Collection_load_SLCustomerAlls_properties_filter_orderBy_recordCap_1_distinct_false_clm_clmParam_loadType_FIRST_bookmark_pqc_readOnly_false.ts",
+  "infor_idorequestservice_api/post_Update_Collection_update_ido_refresh_false.ts",
+  "infor_idorequestservice_api/get_Get_IDO_Property_Info_info_ido_.ts",
+  "infor_idorequestservice_api/post_Invoke_IDO_Method_invoke_ido_method_methodName_.ts",
+  "infor_idorequestservice_api/get_Get_Configurations_configurations.ts",
+  "infor_idorequestservice_api/post_Fire_AES_Event_aes_fire.ts",
+  "infor_idorequestservice_api/post_Upload_File_Stream_filestream_upload.ts",
+  "infor_idorequestservice_api/get_Download_File_Stream_filestream_download_fileId_.ts",
+  "infor_idorequestservice_api/get_Get_Document_Objects_docobj_list_ido_ido_rowPointer_rowPointer_docName_docExt_refSeq_.ts",
+  "infor_idorequestservice_api/post_Upload_Document_Object_docobj_ido_itemId_rowPointer_rowPointer_name_docName_desc_docDescription_ext_docExtension_.ts",
+  "infor_idorequestservice_api/get_Download_Document_Object_docobj_ido_rowPointer_rowPointer_name_docName_refSeq_refSeq_.ts"
+];
