@@ -5,8 +5,11 @@
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
-  xInforMongooseConfig: string; // Mongoose configuration (required for ION API)
-  body: any; // The request body.
+  xInforMongooseConfig?: string; // Mongoose configuration (optional - only required for ION API)
+  ido: string; // IDO name (path parameter)
+  property: string; // IDO property name (query parameter)
+  itemId: string; // _ItemId value (query parameter)
+  body: any; // File data to upload (binary)
 }
 
 const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
@@ -16,17 +19,28 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
   try {
 
 
-    let urlPath = `/filestream/upload`;
+  if (!args.ido) {
+    throw new Error('Missing required parameter: ido');
+  }
+  if (!args.property) {
+    throw new Error('Missing required parameter: property');
+  }
+  if (!args.itemId) {
+    throw new Error('Missing required parameter: itemId');
+  }
+
+    let urlPath = `/file/${encodeURIComponent(args.ido)}`;
     const url = new URL(urlPath, baseUrl);
     
+    // Add required query parameters
+    url.searchParams.append('property', args.property);
+    url.searchParams.append('itemId', args.itemId);
+    
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/octet-stream', // Binary data
       'Accept': 'application/json',
     };
     
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
     if (args.xInforMongooseConfig) {
       headers['X-Infor-MongooseConfig'] = args.xInforMongooseConfig;
     }
@@ -41,9 +55,12 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     if (!args.body) {
       throw new Error('Request body is required for this POST operation');
     }
-    fetchOptions.body = JSON.stringify(args.body);
+    // Handle binary data properly - don't JSON.stringify binary content
+    fetchOptions.body = args.body;
 
-    const response = await fetch(url.toString(), fetchOptions);
+    // Use makeAuthenticatedRequest for proper token handling
+    const { makeAuthenticatedRequest } = await import('../../lib/auth.js');
+    const response = await makeAuthenticatedRequest(url.toString(), fetchOptions);
     
     if (!response.ok) {
       let errorData: any;
@@ -74,23 +91,35 @@ export const apiTool = {
   definition: {
     type: 'function' as const,
     function: {
-      name: 'post_Upload_File_Stream_filestream_upload',
-      description: 'Upload File Stream',
+      name: 'syteline_upload_file_stream',
+      description: 'Upload file to IDO property. Path: POST /file/{ido}?property={prop}&itemId={id}',
       parameters: {
         type: 'object' as const,
         properties: {
           'xInforMongooseConfig': {
             "type": "string",
-            "description": "Mongoose configuration (required for ION API)"
+            "description": "Mongoose configuration (optional - only required for ION API)"
+          },
+          'ido': {
+            "type": "string",
+            "description": "IDO name (path parameter)"
+          },
+          'property': {
+            "type": "string", 
+            "description": "IDO property name for storing binary data (query parameter)"
+          },
+          'itemId': {
+            "type": "string",
+            "description": "_ItemId value (query parameter)"
           },
           'body': {
-            "type": "object",
-            "description": "The request body."
+            "type": "string",
+            "description": "File data to upload (binary content)"
           },
           'BASE_URL': { "type": "string", "description": "Optional base URL to override the default." },
           'API_KEY': { "type": "string", "description": "Optional API key to override the default." }
         },
-        required: ["xInforMongooseConfig","body"]
+        required: ["ido","property","itemId","body"]
       }
     }
   }

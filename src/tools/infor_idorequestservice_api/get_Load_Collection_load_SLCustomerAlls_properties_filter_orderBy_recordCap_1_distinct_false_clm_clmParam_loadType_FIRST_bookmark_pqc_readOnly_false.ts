@@ -45,14 +45,8 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     let urlPath = `/load/${encodeURIComponent(args.ido)}`;
     const url = new URL(urlPath, baseUrl);
     
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    const headers: Record<string, string> = {};
     
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
     if (args.xInforMongooseConfig) {
       headers['X-Infor-MongooseConfig'] = args.xInforMongooseConfig;
     }
@@ -76,7 +70,9 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     
 
 
-    const response = await fetch(url.toString(), fetchOptions);
+    // Use makeAuthenticatedRequest for proper token handling
+    const { makeAuthenticatedRequest } = await import('../../lib/auth.js');
+    const response = await makeAuthenticatedRequest(url.toString(), fetchOptions);
     
     if (!response.ok) {
       let errorData: any;

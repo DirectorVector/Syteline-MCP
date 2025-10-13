@@ -5,11 +5,10 @@
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
-  xInforMongooseConfig: string; // Mongoose configuration (required for ION API)
-  method?: string; // IDO method name
+  xInforMongooseConfig?: string; // Mongoose configuration (optional - only required for ION API)
+  method?: string; // IDO method name (query parameter)
   ido: string; // Path parameter: ido
-  methodName: string; // Path parameter: methodName
-  body: any; // The request body.
+  body: any; // The request body - array of method parameters
 }
 
 const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
@@ -20,21 +19,17 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
   if (!args.ido) {
     throw new Error('Missing required path parameter: ido');
   }
-  if (!args.methodName) {
-    throw new Error('Missing required path parameter: methodName');
-  }
 
     let urlPath = `/invoke/${encodeURIComponent(args.ido)}`;
     const url = new URL(urlPath, baseUrl);
     
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
-    
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
+    // Add method as query parameter if provided
+    if (args.method) {
+      url.searchParams.append('method', args.method);
     }
+    
+    const headers: Record<string, string> = {};
+    
     if (args.xInforMongooseConfig) {
       headers['X-Infor-MongooseConfig'] = args.xInforMongooseConfig;
     }
@@ -44,14 +39,14 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       headers,
     };
     
-    if (args.method !== undefined) url.searchParams.append('method', args.method);
-    
     if (!args.body) {
       throw new Error('Request body is required for this POST operation');
     }
     fetchOptions.body = JSON.stringify(args.body);
 
-    const response = await fetch(url.toString(), fetchOptions);
+    // Use makeAuthenticatedRequest for proper token handling
+    const { makeAuthenticatedRequest } = await import('../../lib/auth.js');
+    const response = await makeAuthenticatedRequest(url.toString(), fetchOptions);
     
     if (!response.ok) {
       let errorData: any;
@@ -82,35 +77,34 @@ export const apiTool = {
   definition: {
     type: 'function' as const,
     function: {
-      name: 'post_Invoke_IDO_Method_invoke_ido_method_methodName_',
-      description: 'Invoke IDO Method',
+      name: 'syteline_invoke_ido_method', 
+      description: 'Invoke an IDO method with parameters. Path: POST /invoke/{ido}?method={methodName}',
       parameters: {
         type: 'object' as const,
         properties: {
           'xInforMongooseConfig': {
             "type": "string",
-            "description": "Mongoose configuration (required for ION API)"
+            "description": "Mongoose configuration (optional - only required for ION API)"
           },
           'method': {
-            "type": "string",
-            "description": "IDO method name"
+            "type": "string", 
+            "description": "IDO method name (query parameter)"
           },
           'ido': {
             "type": "string",
-            "description": "Path parameter: ido"
-          },
-          'methodName': {
-            "type": "string",
-            "description": "Path parameter: methodName"
+            "description": "IDO name (path parameter)"
           },
           'body': {
-            "type": "object",
-            "description": "The request body."
+            "type": "array",
+            "description": "Array of method parameters (strings)",
+            "items": {
+              "type": "string"
+            }
           },
           'BASE_URL': { "type": "string", "description": "Optional base URL to override the default." },
           'API_KEY': { "type": "string", "description": "Optional API key to override the default." }
         },
-        required: ["xInforMongooseConfig","ido","methodName","body"]
+        required: ["ido","body"]
       }
     }
   }

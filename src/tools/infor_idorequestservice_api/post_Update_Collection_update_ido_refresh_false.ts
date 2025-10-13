@@ -5,7 +5,7 @@
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
-  xInforMongooseConfig: string; // Mongoose configuration (required for ION API)
+  xInforMongooseConfig?: string; // Mongoose configuration (optional - only required for ION API)
   refresh?: string; // Refresh after update flag
   ido: string; // Path parameter: ido
   body: any; // The request body.
@@ -28,9 +28,6 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       'Accept': 'application/json',
     };
     
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
     if (args.xInforMongooseConfig) {
       headers['X-Infor-MongooseConfig'] = args.xInforMongooseConfig;
     }
@@ -47,7 +44,9 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     }
     fetchOptions.body = JSON.stringify(args.body);
 
-    const response = await fetch(url.toString(), fetchOptions);
+    // Use makeAuthenticatedRequest for proper token handling
+    const { makeAuthenticatedRequest } = await import('../../lib/auth.js');
+    const response = await makeAuthenticatedRequest(url.toString(), fetchOptions);
     
     if (!response.ok) {
       let errorData: any;
@@ -78,26 +77,35 @@ export const apiTool = {
   definition: {
     type: 'function' as const,
     function: {
-      name: 'post_Update_Collection_update_ido_refresh_false',
-      description: 'Update Collection',
+      name: 'syteline_update_collection',
+      description: 'Insert, update, or delete IDO records. Path: POST /update/{ido}?refresh={mode}. Body: array of operations with Action (1=Insert, 2=Update, 4=Delete), Properties array, and RowPointer for updates/deletes.',
       parameters: {
         type: 'object' as const,
         properties: {
           'xInforMongooseConfig': {
             "type": "string",
-            "description": "Mongoose configuration (required for ION API)"
+            "description": "Mongoose configuration (optional - only required for ION API)"
           },
           'refresh': {
             "type": "string",
-            "description": "Refresh after update flag"
+            "description": "Refresh mode after operation: 'ALL' or 'PROPS'",
+            "enum": ["ALL", "PROPS"]
           },
           'ido': {
             "type": "string",
-            "description": "Path parameter: ido"
+            "description": "IDO name (path parameter)"
           },
           'body': {
-            "type": "object",
-            "description": "The request body."
+            "type": "array",
+            "description": "Array of operations. Each operation: {Action: 1|2|4, Properties: [{Name: string, Value: any}], RowPointer?: string}",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Action": {"type": "integer", "enum": [1, 2, 4], "description": "1=Insert, 2=Update, 4=Delete"},
+                "Properties": {"type": "array", "description": "Array of property name/value pairs"},
+                "RowPointer": {"type": "string", "description": "Required for Update/Delete operations"}
+              }
+            }
           },
           'BASE_URL': { "type": "string", "description": "Optional base URL to override the default." },
           'API_KEY': { "type": "string", "description": "Optional API key to override the default." }
