@@ -5,7 +5,7 @@
  * All other SyteLine API calls require a valid authentication token.
  */
 
-import { setCachedToken, getTokenInfo } from '../../lib/auth';
+import { setCachedToken, getTokenInfo, validateUrl } from '../../lib/auth';
 
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
@@ -34,7 +34,7 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     // Check if we have a valid cached token (via centralized auth helper)
     const tokenInfo = getTokenInfo();
     if (tokenInfo.hasToken && !tokenInfo.isExpired) {
-      console.log('Using cached SyteLine token');
+      console.error('Using cached SyteLine token');
       return {
         success: true,
         token: '***cached***', // Don't expose actual token in response
@@ -62,7 +62,10 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       headers,
     };
 
-    console.log(`Requesting SyteLine token from: ${url.toString()}`);
+    // Validate the URL before making any request
+    validateUrl(url.toString());
+
+    console.error(`Requesting SyteLine token for config: ${args.config}`);
     const response = await fetch(url.toString(), fetchOptions);
     
     if (!response.ok) {
@@ -104,7 +107,7 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     // Cache the token using centralized auth helper (20 minutes)
     setCachedToken(token, 20);
 
-    console.log('Successfully obtained SyteLine authentication token');
+    console.error('Successfully obtained SyteLine authentication token');
     
     return {
       success: true,

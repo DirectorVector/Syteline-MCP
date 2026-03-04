@@ -3,6 +3,30 @@ let cachedToken: string | null = null;
 let tokenExpiry: number | null = null;
 
 /**
+ * Validate that a URL uses an allowed scheme (http or https only).
+ * Throws an error for disallowed schemes to prevent SSRF attacks.
+ * Emits a warning when plain HTTP is used instead of HTTPS.
+ */
+export function validateUrl(urlString: string): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlString);
+  } catch {
+    throw new Error(`Invalid URL: ${urlString}`);
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error(
+      `Disallowed URL scheme "${parsed.protocol}". Only http: and https: are permitted.`
+    );
+  }
+  if (parsed.protocol === 'http:') {
+    console.error(
+      'WARNING: Using plain HTTP for SyteLine API requests. Credentials may be exposed in transit. Use HTTPS in production.'
+    );
+  }
+}
+
+/**
  * Get or refresh SyteLine authentication token
  * This implements the SyteLine IDORequestService authentication pattern
  */
@@ -61,6 +85,7 @@ async function acquireSyteLineToken(): Promise<string | null> {
   const tokenEndpoint = `${baseUrl}/token/${encodeURIComponent(config)}`;
   
   try {
+    validateUrl(tokenEndpoint);
     const response = await fetch(tokenEndpoint, {
       method: 'GET',
       headers: {
@@ -100,7 +125,7 @@ async function acquireSyteLineToken(): Promise<string | null> {
       throw new Error('Invalid token received from SyteLine server');
     }
 
-    console.log('Successfully acquired SyteLine authentication token via IDORequestService');
+    console.error('Successfully acquired SyteLine authentication token via IDORequestService');
     return token;
   } catch (error) {
     console.error('Error acquiring SyteLine token:', error);
@@ -113,6 +138,7 @@ async function acquireSyteLineToken(): Promise<string | null> {
  * Uses Bearer token authentication pattern expected by SyteLine
  */
 export async function makeAuthenticatedRequest(url: string, options: RequestInit = {}): Promise<Response> {
+  validateUrl(url);
   const token = await getAuthToken();
   
   const headers: Record<string, string> = {
@@ -132,7 +158,7 @@ export async function makeAuthenticatedRequest(url: string, options: RequestInit
   
   // If we get 401 Unauthorized, try to refresh token once
   if (response.status === 401 && cachedToken) {
-    console.log('SyteLine token expired, attempting to refresh...');
+    console.error('SyteLine token expired, attempting to refresh...');
     cachedToken = null;
     tokenExpiry = null;
     
@@ -160,7 +186,7 @@ export async function makeAuthenticatedRequest(url: string, options: RequestInit
 export function setCachedToken(token: string, expirationMinutes: number = 20): void {
   cachedToken = token;
   tokenExpiry = Date.now() + (expirationMinutes * 60 * 1000);
-  console.log(`SyteLine token cached for ${expirationMinutes} minutes`);
+  console.error(`SyteLine token cached for ${expirationMinutes} minutes`);
 }
 
 /**

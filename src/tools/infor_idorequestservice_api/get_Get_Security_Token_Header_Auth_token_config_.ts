@@ -2,6 +2,8 @@
  * Get Security Token (Header Auth)
  */
 
+import { validateUrl } from '../../lib/auth.js';
+
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
@@ -41,9 +43,10 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       method: 'GET',
       headers,
     };
-    
 
-    
+    validateUrl(url.toString());
+
+
 
 
     const response = await fetch(url.toString(), fetchOptions);
