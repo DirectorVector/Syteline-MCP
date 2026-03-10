@@ -17,10 +17,11 @@ This document summarizes the comprehensive enhancements made to the SyteLine MCP
 Based on SyteLine documentation research, documented the critical authentication pattern:
 ```typescript
 // ALWAYS start with this - no other operations work without authentication
+// Credentials are sent as HTTP headers — never in the URL path
 await syteline_get_security_token({
-  configName: "SL_PROD",      // Configuration name
-  username: "your_username",   // SyteLine user
-  password: "your_password"    // User password
+  config: "Demo_DALS",        // Defaults to DEFAULT_SITE env var
+  username: "your_username",  // Defaults to SYTELINE_USERNAME env var
+  password: "your_password"   // Defaults to SYTELINE_PASSWORD env var
 });
 ```
 

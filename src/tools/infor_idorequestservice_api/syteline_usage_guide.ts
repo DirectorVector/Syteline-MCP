@@ -24,19 +24,21 @@ const executeFunction = async (args: ExecuteFunctionArgs = {}): Promise<any> => 
 Basic Authentication:
 \`\`\`typescript
 await syteline_get_security_token({
-  config: "SL_PROD",        // SyteLine configuration name
-  username: "your_user",    // Your SyteLine username
-  password: "your_pass"     // Your SyteLine password
+  config: "Demo_DALS",       // Defaults to DEFAULT_SITE env var
+  username: "your_user",     // Defaults to SYTELINE_USERNAME env var
+  password: "your_pass"      // Defaults to SYTELINE_PASSWORD env var
 });
 \`\`\`
 
 What happens:
-• Makes GET request to /json/token/{config}/{username}/{password}
-• SyteLine returns plain text token with quotes: "abc123xyz..."
+• Makes GET request to /token/{config} with username/password as HTTP headers
+• Credentials are NEVER sent in the URL path
+• SyteLine returns JSON: {"Token": "abc123xyz...", "Success": true}
 • Token is automatically cached for 20 minutes
-• All subsequent tools use this cached token
+• All subsequent tools use this cached token via the Authorization header (no Bearer prefix)
 
-Common config names: SL_PROD, TEST_CONFIG, DEVELOPMENT, SL_DEMO
+Config defaults to DEFAULT_SITE env var. Do not hardcode config lists.
+Only discover/confirm sites if DEFAULT_SITE is not applicable.
 
 ⚠️  NO other operations will work without authentication first!
         `
@@ -276,7 +278,7 @@ const sample = await syteline_load_collection({
 ⚠️  **CRITICAL**: Always call syteline_get_security_token FIRST!
 
 **Quick Start Checklist:**
-1. ✅ Authenticate: syteline_get_security_token({config, username, password})
+1. ✅ Authenticate: syteline_get_security_token({config, username, password})  — credentials sent as headers
 2. ✅ Discover: syteline_get_ido_info({idoName: "UserNames"}) (for known IDOs)
 3. ✅ Query: syteline_load_collection({ido: "..."})
 4. ✅ Modify: syteline_update_item() (needs RowPointer from step 3)

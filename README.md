@@ -8,10 +8,12 @@
 
 ```typescript
 // REQUIRED FIRST CALL - Nothing works without this!
+// Credentials are passed as HTTP headers — never in the URL.
+// Config defaults to DEFAULT_SITE env var.
 await syteline_get_security_token({
-  config: "SL_PROD",        // Your SyteLine configuration
-  username: "your_user",    // Your SyteLine username  
-  password: "your_pass"     // Your SyteLine password
+  config: "Demo_DALS",       // Your SyteLine site config (defaults to DEFAULT_SITE env var)
+  username: "your_user",     // Your SyteLine username (defaults to SYTELINE_USERNAME env var)
+  password: "your_pass"      // Your SyteLine password (defaults to SYTELINE_PASSWORD env var)
 });
 ```
 
@@ -102,8 +104,9 @@ The server will start on port 3001 by default (configurable via `PORT` env varia
 
 1. **Authenticate First** (MANDATORY):
    ```typescript
+   // Credentials sent as HTTP headers, not in the URL
    await syteline_get_security_token({
-     config: "SL_PROD",
+     config: "Demo_DALS",    // Defaults to DEFAULT_SITE env var
      username: "your_user", 
      password: "your_pass"
    });
