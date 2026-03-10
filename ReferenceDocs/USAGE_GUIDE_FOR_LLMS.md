@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive instructions for AI assistants and LLMs on how to effectively use the SyteLine MGRESTService MCP Server. The server provides access to SyteLine/Mongoose ERP system through a RESTful API with intelligent token management.
+This document provides comprehensive instructions for AI assistants and LLMs on how to effectively use the SyteLine IDORequestService MCP Server. The server provides access to SyteLine/Mongoose ERP system through a RESTful API with intelligent token management.
 
 ## 🔑 Authentication Requirements
 
@@ -12,11 +12,16 @@ This document provides comprehensive instructions for AI assistants and LLMs on 
 
 ```typescript
 const authResult = await syteline_get_security_token({
-  configName: "SL_PROD",      // Configuration name (typically SL_PROD, TEST_CONFIG, etc.)
-  username: "your_username",   // SyteLine user account
-  password: "your_password"    // User password
+  config: "Demo_DALS",        // Defaults to DEFAULT_SITE env var
+  username: "your_username",  // Defaults to SYTELINE_USERNAME env var
+  password: "your_password"   // Defaults to SYTELINE_PASSWORD env var
 });
 ```
+
+**How it works:**
+- Credentials are sent as HTTP headers (`username`, `password`) — never in the URL path
+- Endpoint: `GET /token/{config}` with credentials in headers
+- Config defaults to `DEFAULT_SITE` env var. Do not hardcode config lists.
 
 **Token Management**: The server automatically caches and refreshes tokens. You don't need to manually handle tokens between calls.
 

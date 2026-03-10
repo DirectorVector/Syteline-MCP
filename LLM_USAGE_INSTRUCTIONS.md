@@ -11,7 +11,7 @@ Before using this MCP server, ensure the `.env` file is configured with your Syt
 BASE_URL=http://your-syteline-server:port/IDORequestService/ido
 SYTELINE_USERNAME=your_username
 SYTELINE_PASSWORD=your_password
-SYTELINE_CONFIG=SL_PROD
+DEFAULT_SITE=Demo_DALS
 ```
 
 ## Quick Start for LLMs
@@ -24,21 +24,26 @@ SYTELINE_CONFIG=SL_PROD
 
 ```typescript
 // REQUIRED FIRST CALL - No other SyteLine operations work without this
+// Credentials are sent as HTTP headers — never in the URL.
 const authResult = await syteline_get_security_token({
-  config: "SL_PROD",        // Your SyteLine configuration name
-  username: "your_user",    // Your SyteLine username
-  password: "your_pass"     // Your SyteLine password
+  config: "Demo_DALS",       // Defaults to DEFAULT_SITE env var
+  username: "your_user",     // Defaults to SYTELINE_USERNAME env var
+  password: "your_pass"      // Defaults to SYTELINE_PASSWORD env var
 });
 ```
 
-**What happens:**\n- Makes GET request to `/json/token/{config}/{username}/{password}`\n- SyteLine returns token (JSON format: `{\"Token\": \"abc123xyz\"}` or plain text: `\"abc123xyz\"`)\n- Token is automatically cached for 20 minutes\n- All subsequent tools use this cached token automatically via Bearer authorization
+**What happens:**
+- Makes GET request to `/token/{config}` with username/password as HTTP headers
+- SyteLine returns token (JSON format: `{"Token": "abc123xyz", "Success": true}` or plain text)
+- Token is automatically cached for 20 minutes
+- All subsequent tools use this cached token automatically via the raw Authorization header (no Bearer prefix)
 
 ## 📋 Essential Operation Sequence
 
 ### 1. Authentication (MANDATORY)
 ```typescript
 await syteline_get_security_token({
-  config: "SL_PROD", 
+  config: "Demo_DALS",       // Defaults to DEFAULT_SITE env var
   username: "admin", 
   password: "password"
 });
@@ -79,18 +84,16 @@ const updateResult = await syteline_update_item({
 ## 🔑 Authentication Details
 
 ### Token Lifecycle
-- **Acquisition**: GET `/token/{config}` with username/password in headers
-- **Response**: Plain text with quotes: `"abc123xyz..."`
+- **Acquisition**: GET `/token/{config}` with username/password as HTTP headers
+- **Response**: JSON `{"Token": "...", "Success": true}` or plain text
 - **Caching**: Automatically cached for 20 minutes
-- **Usage**: All tools use `Authorization: Bearer {token}` header
+- **Usage**: All tools use raw `Authorization: {token}` header (no Bearer prefix)
 - **Expiry**: Auto-refresh on 401 responses
 
 ### Configuration Names
-Common SyteLine configuration names:
-- `SL_PROD` - Production
-- `TEST_CONFIG` - Testing
-- `DEVELOPMENT` - Development
-- `SL_DEMO` - Demo environment
+- Config defaults to `DEFAULT_SITE` environment variable
+- Do not hardcode config lists — config names are environment-specific
+- Use SLSites discovery (after authenticating) to list available sites when needed
 
 ## 📊 Core Data Operations
 

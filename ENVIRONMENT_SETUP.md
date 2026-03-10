@@ -11,13 +11,12 @@ The SyteLine MCP server requires the following environment variables to be set i
 | `BASE_URL` | SyteLine server base URL with IDORequestService path | `http://sytelineserver:8080/IDORequestService/ido` | ✅ Yes |
 | `SYTELINE_USERNAME` | SyteLine username for authentication | `mcpuser` | ✅ Yes |
 | `SYTELINE_PASSWORD` | SyteLine password for authentication | `mcppassword` | ✅ Yes |
-| `SYTELINE_CONFIG` | SyteLine configuration name | `SL_PROD` | ✅ Yes |
+| `DEFAULT_SITE` | SyteLine site/database configuration name | `Demo_DALS` | ✅ Yes |
 
 ### Optional Configuration
 
 | Variable | Description | Example | Required |
 |---------|-------------|---------|----------|
-| `API_KEY` | Additional API key if required by your setup | `your-api-key` | ❌ No |
 | `NODE_ENV` | Environment mode | `production` | ❌ No |
 
 ## Setup Instructions
@@ -41,7 +40,7 @@ Edit the `.env` file with your actual SyteLine server details:
 BASE_URL=http://your-syteline-server.company.com:8080/IDORequestService/ido
 SYTELINE_USERNAME=your_actual_username
 SYTELINE_PASSWORD=your_actual_password
-SYTELINE_CONFIG=SL_PROD
+DEFAULT_SITE=Demo_DALS
 ```
 
 ### 3. Verify Configuration
@@ -60,18 +59,18 @@ npm run start
 - Should include protocol (`http://` or `https://`)
 - Include port if non-standard (e.g., `:8080`)
 
-### SYTELINE_CONFIG Options
-Common configuration names:
-- `SL_PROD` - Production environment
-- `SL_TEST` - Test environment  
-- `SL_DEV` - Development environment
-- Custom names as configured in your SyteLine installation
+### DEFAULT_SITE
+- This is the SyteLine site/database configuration name passed to `/token/{config}`.
+- Do **not** hardcode a config list. Config names are environment-specific.
+- Only discover/confirm sites if `DEFAULT_SITE` is not applicable, or if the user explicitly references another site.
+- Use `SLSites` discovery (after authenticating) to list available sites and validate names when needed.
 
 ### Security Best Practices
 - Never commit the `.env` file to version control
 - Use strong passwords for SyteLine accounts
 - Consider using environment-specific service accounts
 - Regularly rotate credentials
+- Credentials are sent as HTTP headers — never in URL paths
 
 ## Troubleshooting
 
@@ -82,13 +81,13 @@ Common configuration names:
 - Check for typos in variable names
 
 **"No BASE_URL provided"**
-- Verify `BASE_URL` is set and includes the full MGRESTService path
+- Verify `BASE_URL` is set and includes the full IDORequestService path
 - Test URL accessibility from your server
 
 **"Token acquisition failed"**
 - Verify credentials are correct
 - Check if the SyteLine server is accessible
-- Confirm the configuration name exists in SyteLine
+- Confirm the configuration name (DEFAULT_SITE) exists in SyteLine
 
 ### Testing Configuration
 
@@ -112,12 +111,13 @@ Copy this template to create your `.env` file:
 # REQUIRED: SyteLine Server
 BASE_URL=http://your-syteline-server:port/IDORequestService/ido
 
-# REQUIRED: Authentication
+# REQUIRED: Authentication (credentials passed as HTTP headers)
 SYTELINE_USERNAME=your_username
 SYTELINE_PASSWORD=your_password
-SYTELINE_CONFIG=SL_PROD
+
+# REQUIRED: Site/database configuration for /token/{config}
+DEFAULT_SITE=Demo_DALS
 
 # OPTIONAL: Additional settings
-# API_KEY=your_api_key_if_required
 NODE_ENV=production
 ```

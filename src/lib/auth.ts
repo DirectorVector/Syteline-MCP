@@ -67,7 +67,7 @@ export async function getAuthToken(): Promise<string> {
 async function acquireSyteLineToken(): Promise<string | null> {
   const username = process.env.SYTELINE_USERNAME || process.env.USERNAME;
   const password = process.env.SYTELINE_PASSWORD || process.env.PASSWORD;
-  const config = process.env.SYTELINE_CONFIG || process.env.CONFIG_NAME || 'SL_PROD';
+  const config = process.env.DEFAULT_SITE || process.env.SYTELINE_CONFIG || process.env.CONFIG_NAME || 'Demo_DALS';
   const baseUrl = process.env.BASE_URL;
   
   if (!username || !password) {
@@ -117,8 +117,8 @@ async function acquireSyteLineToken(): Promise<string | null> {
         throw new Error('JSON response missing Token field');
       }
     } catch (jsonError) {
-      // Fall back to plain text format (Coverage report format)
-      token = responseText.replace(/^\"|\"/g, '').trim();
+      // Fall back to plain text format — strip surrounding quotes
+      token = responseText.replace(/^"|"$/g, '').trim();
     }
     
     if (!token) {
@@ -135,7 +135,7 @@ async function acquireSyteLineToken(): Promise<string | null> {
 
 /**
  * Make authenticated request to SyteLine IDORequestService API
- * Uses Bearer token authentication pattern expected by SyteLine
+ * Uses raw token in Authorization header (no Bearer prefix) as expected by SyteLine
  */
 export async function makeAuthenticatedRequest(url: string, options: RequestInit = {}): Promise<Response> {
   validateUrl(url);
@@ -148,7 +148,7 @@ export async function makeAuthenticatedRequest(url: string, options: RequestInit
   };
   
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers['Authorization'] = token;
   }
   
   const response = await fetch(url, {
@@ -165,7 +165,7 @@ export async function makeAuthenticatedRequest(url: string, options: RequestInit
     try {
       const newToken = await getAuthToken();
       if (newToken) {
-        headers['Authorization'] = `Bearer ${newToken}`;
+        headers['Authorization'] = newToken;
         return fetch(url, {
           ...options,
           headers

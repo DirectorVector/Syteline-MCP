@@ -1,7 +1,5 @@
 export const toolPaths = [
   "infor_idorequestservice_api/syteline_usage_guide.ts",
-  "infor_idorequestservice_api/get_Get_Security_Token_Path_Params_token_config_username_password_.ts",
-  // \"infor_idorequestservice_api/syteline_get_ido_collection_names.ts\", // Removed - not in Swagger spec
   "infor_idorequestservice_api/get_Get_Security_Token_Header_Auth_token_config_.ts",
   "infor_idorequestservice_api/get_Load_Collection_load_SLCustomerAlls_properties_filter_orderBy_recordCap_1_distinct_false_clm_clmParam_loadType_FIRST_bookmark_pqc_readOnly_false.ts",
   "infor_idorequestservice_api/post_Update_Collection_update_ido_refresh_false.ts",
