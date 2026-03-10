@@ -98,8 +98,8 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       if (jsonError instanceof Error && jsonError.message.startsWith('Authentication failed:')) {
         throw jsonError;
       }
-      // Fall back to plain text format
-      token = responseText.replace(/^\"|\"/g, '').trim();
+      // Fall back to plain text format — strip surrounding quotes
+      token = responseText.replace(/^"|"$/g, '').trim();
     }
 
     if (!token) {

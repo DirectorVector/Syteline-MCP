@@ -117,8 +117,8 @@ async function acquireSyteLineToken(): Promise<string | null> {
         throw new Error('JSON response missing Token field');
       }
     } catch (jsonError) {
-      // Fall back to plain text format (Coverage report format)
-      token = responseText.replace(/^\"|\"/g, '').trim();
+      // Fall back to plain text format — strip surrounding quotes
+      token = responseText.replace(/^"|"$/g, '').trim();
     }
     
     if (!token) {
