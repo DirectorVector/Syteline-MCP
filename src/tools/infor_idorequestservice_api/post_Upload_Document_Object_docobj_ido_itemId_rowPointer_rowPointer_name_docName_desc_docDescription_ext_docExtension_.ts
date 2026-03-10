@@ -2,6 +2,8 @@
  * Upload Document Object
  */
 
+import { validateUrl } from '../../lib/auth.js';
+
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
@@ -69,6 +71,8 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
       throw new Error('Request body is required for this POST operation');
     }
     fetchOptions.body = JSON.stringify(args.body);
+
+    validateUrl(url.toString());
 
     const response = await fetch(url.toString(), fetchOptions);
     

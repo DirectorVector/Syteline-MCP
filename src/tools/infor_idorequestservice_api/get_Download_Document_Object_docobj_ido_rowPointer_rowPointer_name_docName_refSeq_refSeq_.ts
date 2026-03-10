@@ -2,6 +2,8 @@
  * Download Document Object
  */
 
+import { validateUrl } from '../../lib/auth.js';
+
 interface ExecuteFunctionArgs {
   BASE_URL?: string;
   API_KEY?: string;
@@ -54,8 +56,8 @@ const executeFunction = async (args: ExecuteFunctionArgs): Promise<any> => {
     if (args.rowPointer !== undefined) url.searchParams.append('rowPointer', args.rowPointer);
     if (args.name !== undefined) url.searchParams.append('name', args.name);
     if (args.refSeq !== undefined) url.searchParams.append('refSeq', args.refSeq);
-    
 
+    validateUrl(url.toString());
 
     const response = await fetch(url.toString(), fetchOptions);
     
